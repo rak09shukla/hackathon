@@ -97,13 +97,14 @@
               </ul>
             </li>
           </ul>
-          <br>
-          <br>
-          <br>
-          <br>
-          <ul class="list-unstyled CTAs">
+          <!-- <ul class="list-unstyled CTAs">
             <li><a href="" class="article">Import Export</a></li>
             <li><a href="" class="article">Predict</a></li>
+          </ul> -->
+          <ul>
+            <li class="active">
+              <a href="#importExport" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Import Export</a>
+            </li>
           </ul>
         </div>
       </nav>
@@ -111,6 +112,9 @@
       <div id="section-macroecon" class="tab-content">
         <h2>Macroeconomic</h2>
         <p>GRAPHS</p>
+        <div  class = "chhhhh"id="chartdiv0"></div>
+        <div class= "chhhhh" id="chartdiv1"></div>
+        <div  class= "chhhhh" id="chartdiv2"></div>
       </div>
       <div id="section-agriculture" class="tab-content">
         <h2>Agricultural</h2>
@@ -120,27 +124,46 @@
         <h2>Debt Services</h2>
         <p>GRAPHS </p>
       </div>
-      <div id="chartdiv"></div>
+      <div id="importExport" class="tab-content">
+        <h2>Import Export</h2>
+      </div>
+      
     </section>
   </div>
-
-  <div id="chartdiv"></div>
-  <div id="chartdiv"></div>
   <!-- Chart code -->
   <script>
+     $(document).ready(function () {
+      $('#sidebarCollapse').on('click', function () {
+        $('#sidebar').toggleClass('active');
+      });
+    });
+
+    $(document).ready(function () {
+      $('.nav ul li:first').addClass('active');
+      $('.tab-content:not(:first)').hide();
+      $('.nav ul li a').click(function (event) {
+        event.preventDefault();
+        var content = $(this).attr('href');
+        $(this).parent().addClass('active');
+        $(this).parent().siblings().removeClass('active');
+        $(content).show();
+        $(content).siblings('.tab-content').hide();
+      });
+    });
+
+
+    
     am5.ready(function () {
 
       // Create root element
       // https://www.amcharts.com/docs/v5/getting-started/#Root_element
-      var root = am5.Root.new("chartdiv");
 
-
-      // Set themes
-      // https://www.amcharts.com/docs/v5/concepts/themes/
-      root.setThemes([
+      $(".chhhhh").each(function( index){
+        var root = am5.Root.new("chartdiv" + index);
+        root.setThemes([
         am5themes_Animated.new(root)
       ]);
-
+        
 
       // Create chart
       // https://www.amcharts.com/docs/v5/charts/xy-chart/
@@ -151,7 +174,19 @@
         wheelY: "zoomX",
         pinchZoomX: true
       }));
-
+      var chart1 = root.container.children.push(am5xy.XYChart.new(root, {
+        panX: true,
+        panY: true,
+        wheelX: "panX",
+        wheelY: "zoomX",
+        pinchZoomX: true
+      })); var chart2 = root.container.children.push(am5xy.XYChart.new(root, {
+        panX: true,
+        panY: true,
+        wheelX: "panX",
+        wheelY: "zoomX",
+        pinchZoomX: true
+      }));
 
       // Add cursor
       // https://www.amcharts.com/docs/v5/charts/xy-chart/cursor/
@@ -306,28 +341,17 @@
       // https://www.amcharts.com/docs/v5/concepts/animations/
       series.appear(1000);
       chart.appear(1000, 100);
+      
+      })
+
+      // Set themes
+      // https://www.amcharts.com/docs/v5/concepts/themes/
+    
+    
 
     }); // end am5.ready()
 
-    $(document).ready(function () {
-      $('#sidebarCollapse').on('click', function () {
-        $('#sidebar').toggleClass('active');
-      });
-    });
-
-    $(document).ready(function () {
-      $('.nav ul li:first').addClass('active');
-      $('.tab-content:not(:first)').hide();
-      $('.nav ul li a').click(function (event) {
-        event.preventDefault();
-        var content = $(this).attr('href');
-        $(this).parent().addClass('active');
-        $(this).parent().siblings().removeClass('active');
-        $(content).show();
-        $(content).siblings('.tab-content').hide();
-      });
-    });
-
+   
 
   </script>
 
