@@ -1,330 +1,338 @@
 <!DOCTYPE html>
-
-<!-- Styles -->
-<style>
-#chartdiv {
-  width: 100%;
-  height: 200px;
-}
-</style>
-
-<!-- Resources -->
-<script src="https://cdn.amcharts.com/lib/5/index.js"></script>
-<script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
-<script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
-
-<!-- Chart code -->
-<script>
-am5.ready(function() {
-
-// Create root element
-// https://www.amcharts.com/docs/v5/getting-started/#Root_element
-var root = am5.Root.new("chartdiv");
-
-
-// Set themes
-// https://www.amcharts.com/docs/v5/concepts/themes/
-root.setThemes([
-  am5themes_Animated.new(root)
-]);
-
-
-// Create chart
-// https://www.amcharts.com/docs/v5/charts/xy-chart/
-var chart = root.container.children.push(am5xy.XYChart.new(root, {
-  panX: true,
-  panY: true,
-  wheelX: "panX",
-  wheelY: "zoomX",
-  pinchZoomX:true
-}));
-
-
-// Add cursor
-// https://www.amcharts.com/docs/v5/charts/xy-chart/cursor/
-var cursor = chart.set("cursor", am5xy.XYCursor.new(root, {}));
-cursor.lineX.set("forceHidden", true);
-cursor.lineY.set("forceHidden", true);
-
-// Generate random data
-var date = new Date();
-date.setHours(0, 0, 0, 0);
-var value = 100;
-
-function generateData() {
-  value = Math.round((Math.random() * 10 - 5) + value);
-  am5.time.add(date, "day", 1);
-  return {
-    date: date.getTime(),
-    value: value
-  };
-}
-
-function generateDatas(count) {
-  var data = [];
-  for (var i = 0; i < count; ++i) {
-    data.push(generateData());
-  }
-  return data;
-}
-
-
-// Create axes
-// https://www.amcharts.com/docs/v5/charts/xy-chart/axes/
-var xAxis = chart.xAxes.push(am5xy.DateAxis.new(root, {
-  baseInterval: {
-    timeUnit: "day",
-    count: 1
-  },
-  renderer: am5xy.AxisRendererX.new(root, {})
-}));
-
-var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
-  renderer: am5xy.AxisRendererY.new(root, {})
-}));
-
-
-// Add series
-// https://www.amcharts.com/docs/v5/charts/xy-chart/series/
-var series = chart.series.push(am5xy.LineSeries.new(root, {
-  name: "Series",
-  xAxis: xAxis,
-  yAxis: yAxis,
-  valueYField: "value",
-  valueXField: "date",
-  tooltip: am5.Tooltip.new(root, {
-    labelText: "{valueY}"
-  })
-}));
-
-series.fills.template.setAll({
-  fillOpacity: 0.2,
-  visible: true
-});
-
-
-// Add scrollbar
-// https://www.amcharts.com/docs/v5/charts/xy-chart/scrollbars/
-chart.set("scrollbarX", am5.Scrollbar.new(root, {
-  orientation: "horizontal"
-}));
-
-
-// Set data
-var data = generateDatas(1200);
-series.data.setAll(data);
-
-
-var rangeDate = new Date();
-am5.time.add(rangeDate, "day", Math.round(series.dataItems.length / 2));
-var rangeTime = rangeDate.getTime();
-
-// add series range
-var seriesRangeDataItem = xAxis.makeDataItem({});
-var seriesRange = series.createAxisRange(seriesRangeDataItem);
-seriesRange.fills.template.setAll({
-  visible: true,
-  opacity: 0.3
-});
-
-seriesRange.fills.template.set("fillPattern", am5.LinePattern.new(root, {
-  color: am5.color(0xffffff),
-  rotation: 45,
-  strokeWidth: 2,
-  width: 2000,
-  height: 2000,
-  fill:am5.color(0xffffff)
-}));
-
-seriesRange.strokes.template.set("stroke", am5.color(0x000000));
-
-xAxis.onPrivate("max", function (value) {
-  seriesRangeDataItem.set("endValue", value);
-  seriesRangeDataItem.set("value", rangeTime);
-});
-
-// add axis range
-var range = xAxis.createAxisRange(xAxis.makeDataItem({}));
-var color = root.interfaceColors.get("primaryButton");
-
-range.set("value", rangeDate.getTime());
-range.get("grid").setAll({
-  strokeOpacity: 1,
-  stroke: color
-});
-
-var resizeButton = am5.Button.new(root, {
-  themeTags: ["resize", "horizontal"],
-  icon: am5.Graphics.new(root, {
-    themeTags: ["icon"]
-  })
-});
-
-// restrict from being dragged vertically
-resizeButton.adapters.add("y", function () {
-  return 0;
-});
-
-// restrict from being dragged outside of plot
-resizeButton.adapters.add("x", function (x) {
-  return Math.max(0, Math.min(chart.plotContainer.width(), x));
-});
-
-// change range when x changes
-resizeButton.events.on("dragged", function () {
-  var x = resizeButton.x();
-  var position = xAxis.toAxisPosition(x / chart.plotContainer.width());
-
-  var value = xAxis.positionToValue(position);
-
-  range.set("value", value);
-
-  seriesRangeDataItem.set("value", value);
-  seriesRangeDataItem.set("endValue", xAxis.getPrivate("max"));
-});
-
-// set bullet for the range
-range.set("bullet", am5xy.AxisBullet.new(root, {
-  sprite: resizeButton
-}));
-
-
-// Make stuff animate on load
-// https://www.amcharts.com/docs/v5/concepts/animations/
-series.appear(1000);
-chart.appear(1000, 100);
-
-}); // end am5.ready()
-</script>
-
-
 <html>
 
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Macroeconomic Researcher</title>
-    <link rel="stylesheet" href="./home.css">
-    <!-- Bootstrap CSS CDN -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Macroeconomic Researcher</title>
+  <link rel="stylesheet" href="./home.css">
+  <!-- Bootstrap CSS CDN -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
+    integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
 
-    <!-- Font Awesome JS -->
-    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
-    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+  <!-- Font Awesome JS -->
+  <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js"
+    integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ"
+    crossorigin="anonymous"></script>
+  <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js"
+    integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY"
+    crossorigin="anonymous"></script>
 
 
-    <!-- jQuery CDN - Slim version (=without AJAX) -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <!-- Popper.JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
-    <!-- Bootstrap JS -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-  
-    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+  <!-- jQuery CDN - Slim version (=without AJAX) -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+  <!-- Popper.JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"
+    integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ"
+    crossorigin="anonymous"></script>
+  <!-- Bootstrap JS -->
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"
+    integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm"
+    crossorigin="anonymous"></script>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
-    <script> 
-      $(document).ready(function () {
-            $('#sidebarCollapse').on('click', function () {
-                $('#sidebar').toggleClass('active');
-            });
-        });
-      
-      $(document).ready(function () {
-        $('.nav ul li:first').addClass('active');
-        $('.tab-content:not(:first)').hide();
-        $('.nav ul li a').click(function (event) {
-            event.preventDefault();
-            var content = $(this).attr('href');
-            $(this).parent().addClass('active');
-            $(this).parent().siblings().removeClass('active');
-            $(content).show();
-            $(content).siblings('.tab-content').hide();
-        });
-      });
-
-    </script>
+  <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    crossorigin="anonymous"></script>
+  <!-- Resources -->
+  <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+  <script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
+  <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
 </head>
 
 <body>
-    <div class="container">
-        <header>
-            <div class="logo"><img src="./BLACK+FNS+1.png"></div>
-            <h3 class="page-title">Macroeconomic Researcher Food Security Time Series Dashboard</h3>
-            <div class="dropdown">
-                <button class="dropbtn">
-                    Country Flags
-                </button>
-                <div class="dropdown-content">
-                    <a href="#"><img src="./iflag.jpg"width="20" height="15"> India</a>
-                    <a href="#"><img src="./uflag.jpg" width="20" height="15"> USA</a>
-                </div>
-            </div>    
-        </header>
-
-        <section>
-            <nav>
-            <div class="nav">
-              <ul>
-                <li class="active">
-                  <a href="#MacroEconomicSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Macroeconomic (USD)</a>
-                  <ul class="collapse list-unstyled" id="MacroEconomicSubmenu">
-                      <li><a href="#section-macroecon" >GDP (USD)</a></li>
-                      <li><a href="#section-macroecon" >FDI Inflows (USD)</a></li>
-                      <li><a href="#section-macroecon" >FDI Outflows (USD)</a></li>
-                  </ul>
-              </li>
-              </ul>
-              <ul>
-                <li class="active">
-                  <a href="#AgriculturalSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Agricultural</a>
-                  <ul class="collapse list-unstyled" id="AgriculturalSubmenu">
-                      <li><a href="#section-agriculture">Contribution of Agri (% GDP)</a></li>
-                      <li><a href="#section-agriculture" >Credit</a></li>
-                      <li><a href="#section-agriculture" >Fertilizers</a></li>
-                      <li><a href="#section-agriculture" >Fertilizer PROD</a></li>
-                  </ul>
-              </li>
-              </ul>
-              <ul>
-                <li class="active">
-                  <a href="#DebtServicesSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Debt Services</a>
-                  <ul class="collapse list-unstyled" id="DebtServicesSubmenu">
-                      <li><a href="#section-debt">Reserves</a></li>
-                      <li><a href="#section-debt">GNI</a></li>
-                      <li><a href="#section-debt">Total Debt(%)</a></li>
-                  </ul>
-              </li>
-              </ul>
-              <br>
-              <br>
-              <br>
-              <br>
-              <ul class="list-unstyled CTAs">
-                <li><a href=""class="article" >Import Export</a></li>
-                <li><a href="" class="article">Predict</a></li>
-            </ul>
-          </div>
-        </nav>
-            
-            <div id="section-macroecon" class="tab-content">
-              <h2>Macroeconomic</h2>
-              <p>GRAPHS</p>
-          </div>
-          <div id="section-agriculture" class="tab-content">
-              <h2>Agricultural</h2>
-              <p>GRAPHS </p>
-          </div>
-          <div id="section-debt" class="tab-content">
-            <h2>Debt Services</h2>
-            <p>GRAPHS </p>
+  <div class="container">
+    <header>
+      <div class="logo"><img src="./BLACK+FNS+1.png"></div>
+      <h3 class="page-title">Macroeconomic Researcher Food Security Time Series Dashboard</h3>
+      <div class="dropdown">
+        <button class="dropbtn">
+          Country Flags
+        </button>
+        <div class="dropdown-content">
+          <a href="#"><img src="./iflag.jpg" width="20" height="15"> India</a>
+          <a href="#"><img src="./uflag.jpg" width="20" height="15"> USA</a>
         </div>
+      </div>
+    </header>
 
-          </section>
-    </div>
-    <div id="chartdiv"></div>
-    <div id="chartdiv"></div>
-    <div id="chartdiv"></div>
+    <section>
+      <nav>
+        <div class="nav">
+          <ul>
+            <li class="active">
+              <a href="#MacroEconomicSubmenu" data-toggle="collapse" aria-expanded="false"
+                class="dropdown-toggle">Macroeconomic (USD)</a>
+              <ul class="collapse list-unstyled" id="MacroEconomicSubmenu">
+                <li><a href="#section-macroecon">GDP (USD)</a></li>
+                <li><a href="#section-macroecon">FDI Inflows (USD)</a></li>
+                <li><a href="#section-macroecon">FDI Outflows (USD)</a></li>
+              </ul>
+            </li>
+          </ul>
+          <ul>
+            <li class="active">
+              <a href="#AgriculturalSubmenu" data-toggle="collapse" aria-expanded="false"
+                class="dropdown-toggle">Agricultural</a>
+              <ul class="collapse list-unstyled" id="AgriculturalSubmenu">
+                <li><a href="#section-agriculture">Contribution of Agri (% GDP)</a></li>
+                <li><a href="#section-agriculture">Credit</a></li>
+                <li><a href="#section-agriculture">Fertilizers</a></li>
+                <li><a href="#section-agriculture">Fertilizer PROD</a></li>
+              </ul>
+            </li>
+          </ul>
+          <ul>
+            <li class="active">
+              <a href="#DebtServicesSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Debt
+                Services</a>
+              <ul class="collapse list-unstyled" id="DebtServicesSubmenu">
+                <li><a href="#section-debt">Reserves</a></li>
+                <li><a href="#section-debt">GNI</a></li>
+                <li><a href="#section-debt">Total Debt(%)</a></li>
+              </ul>
+            </li>
+          </ul>
+          <br>
+          <br>
+          <br>
+          <br>
+          <ul class="list-unstyled CTAs">
+            <li><a href="" class="article">Import Export</a></li>
+            <li><a href="" class="article">Predict</a></li>
+          </ul>
+        </div>
+      </nav>
+
+      <div id="section-macroecon" class="tab-content">
+        <h2>Macroeconomic</h2>
+        <p>GRAPHS</p>
+      </div>
+      <div id="section-agriculture" class="tab-content">
+        <h2>Agricultural</h2>
+        <p>GRAPHS </p>
+      </div>
+      <div id="section-debt" class="tab-content">
+        <h2>Debt Services</h2>
+        <p>GRAPHS </p>
+      </div>
+      <div id="chartdiv"></div>
+    </section>
+  </div>
+
+  <div id="chartdiv"></div>
+  <div id="chartdiv"></div>
+  <!-- Chart code -->
+  <script>
+    am5.ready(function () {
+
+      // Create root element
+      // https://www.amcharts.com/docs/v5/getting-started/#Root_element
+      var root = am5.Root.new("chartdiv");
+
+
+      // Set themes
+      // https://www.amcharts.com/docs/v5/concepts/themes/
+      root.setThemes([
+        am5themes_Animated.new(root)
+      ]);
+
+
+      // Create chart
+      // https://www.amcharts.com/docs/v5/charts/xy-chart/
+      var chart = root.container.children.push(am5xy.XYChart.new(root, {
+        panX: true,
+        panY: true,
+        wheelX: "panX",
+        wheelY: "zoomX",
+        pinchZoomX: true
+      }));
+
+
+      // Add cursor
+      // https://www.amcharts.com/docs/v5/charts/xy-chart/cursor/
+      var cursor = chart.set("cursor", am5xy.XYCursor.new(root, {}));
+      cursor.lineX.set("forceHidden", true);
+      cursor.lineY.set("forceHidden", true);
+
+      // Generate random data
+      var date = new Date();
+      date.setHours(0, 0, 0, 0);
+      var value = 100;
+
+      function generateData() {
+        value = Math.round((Math.random() * 10 - 5) + value);
+        am5.time.add(date, "day", 1);
+        return {
+          date: date.getTime(),
+          value: value
+        };
+      }
+
+      function generateDatas(count) {
+        var data = [];
+        for (var i = 0; i < count; ++i) {
+          data.push(generateData());
+        }
+        return data;
+      }
+
+
+      // Create axes
+      // https://www.amcharts.com/docs/v5/charts/xy-chart/axes/
+      var xAxis = chart.xAxes.push(am5xy.DateAxis.new(root, {
+        baseInterval: {
+          timeUnit: "day",
+          count: 1
+        },
+        renderer: am5xy.AxisRendererX.new(root, {})
+      }));
+
+      var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
+        renderer: am5xy.AxisRendererY.new(root, {})
+      }));
+
+
+      // Add series
+      // https://www.amcharts.com/docs/v5/charts/xy-chart/series/
+      var series = chart.series.push(am5xy.LineSeries.new(root, {
+        name: "Series",
+        xAxis: xAxis,
+        yAxis: yAxis,
+        valueYField: "value",
+        valueXField: "date",
+        tooltip: am5.Tooltip.new(root, {
+          labelText: "{valueY}"
+        })
+      }));
+
+      series.fills.template.setAll({
+        fillOpacity: 0.2,
+        visible: true
+      });
+
+
+      // Add scrollbar
+      // https://www.amcharts.com/docs/v5/charts/xy-chart/scrollbars/
+      chart.set("scrollbarX", am5.Scrollbar.new(root, {
+        orientation: "horizontal"
+      }));
+
+
+      // Set data
+      var data = generateDatas(1200);
+      series.data.setAll(data);
+
+
+      var rangeDate = new Date();
+      am5.time.add(rangeDate, "day", Math.round(series.dataItems.length / 2));
+      var rangeTime = rangeDate.getTime();
+
+      // add series range
+      var seriesRangeDataItem = xAxis.makeDataItem({});
+      var seriesRange = series.createAxisRange(seriesRangeDataItem);
+      seriesRange.fills.template.setAll({
+        visible: true,
+        opacity: 0.3
+      });
+
+      seriesRange.fills.template.set("fillPattern", am5.LinePattern.new(root, {
+        color: am5.color(0xffffff),
+        rotation: 45,
+        strokeWidth: 2,
+        width: 2000,
+        height: 2000,
+        fill: am5.color(0xffffff)
+      }));
+
+      seriesRange.strokes.template.set("stroke", am5.color(0x000000));
+
+      xAxis.onPrivate("max", function (value) {
+        seriesRangeDataItem.set("endValue", value);
+        seriesRangeDataItem.set("value", rangeTime);
+      });
+
+      // add axis range
+      var range = xAxis.createAxisRange(xAxis.makeDataItem({}));
+      var color = root.interfaceColors.get("primaryButton");
+
+      range.set("value", rangeDate.getTime());
+      range.get("grid").setAll({
+        strokeOpacity: 1,
+        stroke: color
+      });
+
+      var resizeButton = am5.Button.new(root, {
+        themeTags: ["resize", "horizontal"],
+        icon: am5.Graphics.new(root, {
+          themeTags: ["icon"]
+        })
+      });
+
+      // restrict from being dragged vertically
+      resizeButton.adapters.add("y", function () {
+        return 0;
+      });
+
+      // restrict from being dragged outside of plot
+      resizeButton.adapters.add("x", function (x) {
+        return Math.max(0, Math.min(chart.plotContainer.width(), x));
+      });
+
+      // change range when x changes
+      resizeButton.events.on("dragged", function () {
+        var x = resizeButton.x();
+        var position = xAxis.toAxisPosition(x / chart.plotContainer.width());
+
+        var value = xAxis.positionToValue(position);
+
+        range.set("value", value);
+
+        seriesRangeDataItem.set("value", value);
+        seriesRangeDataItem.set("endValue", xAxis.getPrivate("max"));
+      });
+
+      // set bullet for the range
+      range.set("bullet", am5xy.AxisBullet.new(root, {
+        sprite: resizeButton
+      }));
+
+
+      // Make stuff animate on load
+      // https://www.amcharts.com/docs/v5/concepts/animations/
+      series.appear(1000);
+      chart.appear(1000, 100);
+
+    }); // end am5.ready()
+
+    $(document).ready(function () {
+      $('#sidebarCollapse').on('click', function () {
+        $('#sidebar').toggleClass('active');
+      });
+    });
+
+    $(document).ready(function () {
+      $('.nav ul li:first').addClass('active');
+      $('.tab-content:not(:first)').hide();
+      $('.nav ul li a').click(function (event) {
+        event.preventDefault();
+        var content = $(this).attr('href');
+        $(this).parent().addClass('active');
+        $(this).parent().siblings().removeClass('active');
+        $(content).show();
+        $(content).siblings('.tab-content').hide();
+      });
+    });
+
+
+  </script>
+
+
+
 </body>
 
 </html>

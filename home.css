@@ -90,3 +90,8 @@ nav {
     display: table;
     clear: both;
   }
+
+  #chartdiv {
+    width: 100%;
+    height: 200px;
+  }
