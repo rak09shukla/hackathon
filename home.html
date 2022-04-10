@@ -19,13 +19,31 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
     <!-- Bootstrap JS -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
-    <script>
+    <script> 
       $(document).ready(function () {
             $('#sidebarCollapse').on('click', function () {
                 $('#sidebar').toggleClass('active');
             });
         });
+      
+      $(document).ready(function () {
+        $('.nav ul li:first').addClass('active');
+        $('.tab-content:not(:first)').hide();
+        $('.nav ul li a').click(function (event) {
+            event.preventDefault();
+            var content = $(this).attr('href');
+            $(this).parent().addClass('active');
+            $(this).parent().siblings().removeClass('active');
+            $(content).show();
+            $(content).siblings('.tab-content').hide();
+        });
+      });
+
     </script>
 </head>
 
@@ -47,19 +65,14 @@
 
         <section>
             <nav>
+            <div class="nav">
               <ul>
                 <li class="active">
                   <a href="#MacroEconomicSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Macroeconomic (USD)</a>
                   <ul class="collapse list-unstyled" id="MacroEconomicSubmenu">
-                      <li>
-                          <a href="#">GDP (USD)</a>
-                      </li>
-                      <li>
-                          <a href="#">FDI Inflows (USD)</a>
-                      </li>
-                      <li>
-                          <a href="#">FDI Outflows (USD)</a>
-                      </li>
+                      <li><a href="#section-macroecon" >GDP (USD)</a></li>
+                      <li><a href="#section-macroecon" >FDI Inflows (USD)</a></li>
+                      <li><a href="#section-macroecon" >FDI Outflows (USD)</a></li>
                   </ul>
               </li>
               </ul>
@@ -67,18 +80,10 @@
                 <li class="active">
                   <a href="#AgriculturalSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Agricultural</a>
                   <ul class="collapse list-unstyled" id="AgriculturalSubmenu">
-                      <li>
-                          <a href="#">Contribution of Agri (% GDP)</a>
-                      </li>
-                      <li>
-                          <a href="#">Credit</a>
-                      </li>
-                      <li>
-                          <a href="#">Fertilizers</a>
-                      </li>
-                      <li>
-                        <a href="#">Fertilizer PROD</a>
-                    </li>
+                      <li><a href="#section-agriculture">Contribution of Agri (% GDP)</a></li>
+                      <li><a href="#section-agriculture" >Credit</a></li>
+                      <li><a href="#section-agriculture" >Fertilizers</a></li>
+                      <li><a href="#section-agriculture" >Fertilizer PROD</a></li>
                   </ul>
               </li>
               </ul>
@@ -86,33 +91,36 @@
                 <li class="active">
                   <a href="#DebtServicesSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Debt Services</a>
                   <ul class="collapse list-unstyled" id="DebtServicesSubmenu">
-                      <li>
-                          <a href="#">Reserves</a>
-                      </li>
-                      <li>
-                          <a href="#">GNI</a>
-                      </li>
-                      <li>
-                          <a href="#">Total Debt(%)</a>
-                      </li>
+                      <li><a href="#section-debt">Reserves</a></li>
+                      <li><a href="#section-debt">GNI</a></li>
+                      <li><a href="#section-debt">Total Debt(%)</a></li>
                   </ul>
               </li>
               </ul>
+              <br>
+              <br>
+              <br>
+              <br>
               <ul class="list-unstyled CTAs">
-                <li>
-                    <a href=""class="article" >Import Export</a>
-                </li>
-                <li>
-                    <a href="" class="article">Predict</a>
-                </li>
+                <li><a href=""class="article" >Import Export</a></li>
+                <li><a href="" class="article">Predict</a></li>
             </ul>
-            </nav>
+          </div>
+        </nav>
             
-            <article>
-              <h1>London</h1>
-              <p>London is the capital city of England. It is the most populous city in the  United Kingdom, with a metropolitan area of over 13 million inhabitants.</p>
-              <p>Standing on the River Thames, London has been a major settlement for two millennia, its history going back to its founding by the Romans, who named it Londinium.</p>
-            </article>
+            <div id="section-macroecon" class="tab-content">
+              <h2>Macroeconomic</h2>
+              <p>GRAPHS</p>
+          </div>
+          <div id="section-agriculture" class="tab-content">
+              <h2>Agricultural</h2>
+              <p>GRAPHS </p>
+          </div>
+          <div id="section-debt" class="tab-content">
+            <h2>Debt Services</h2>
+            <p>GRAPHS </p>
+        </div>
+
           </section>
     </div>
 </body>
