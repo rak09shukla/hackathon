@@ -5,6 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Macroeconomic Researcher</title>
     <link rel="stylesheet" href="./home.css">
+    <!-- Bootstrap CSS CDN -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+
+    <!-- Font Awesome JS -->
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+
+
+    <!-- jQuery CDN - Slim version (=without AJAX) -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <!-- Popper.JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+
+    <script>
+      $(document).ready(function () {
+            $('#sidebarCollapse').on('click', function () {
+                $('#sidebar').toggleClass('active');
+            });
+        });
+    </script>
 </head>
 
 <body>
@@ -26,10 +48,64 @@
         <section>
             <nav>
               <ul>
-                <li><a href="#">Macroeconomic</a></li>
-                <li><a href="#">Agricultural</a></li>
-                <li><a href="#">Import/Export Flow</a></li>
+                <li class="active">
+                  <a href="#MacroEconomicSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Macroeconomic (USD)</a>
+                  <ul class="collapse list-unstyled" id="MacroEconomicSubmenu">
+                      <li>
+                          <a href="#">GDP (USD)</a>
+                      </li>
+                      <li>
+                          <a href="#">FDI Inflows (USD)</a>
+                      </li>
+                      <li>
+                          <a href="#">FDI Outflows (USD)</a>
+                      </li>
+                  </ul>
+              </li>
               </ul>
+              <ul>
+                <li class="active">
+                  <a href="#AgriculturalSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Agricultural</a>
+                  <ul class="collapse list-unstyled" id="AgriculturalSubmenu">
+                      <li>
+                          <a href="#">Contribution of Agri (% GDP)</a>
+                      </li>
+                      <li>
+                          <a href="#">Credit</a>
+                      </li>
+                      <li>
+                          <a href="#">Fertilizers</a>
+                      </li>
+                      <li>
+                        <a href="#">Fertilizer PROD</a>
+                    </li>
+                  </ul>
+              </li>
+              </ul>
+              <ul>
+                <li class="active">
+                  <a href="#DebtServicesSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Debt Services</a>
+                  <ul class="collapse list-unstyled" id="DebtServicesSubmenu">
+                      <li>
+                          <a href="#">Reserves</a>
+                      </li>
+                      <li>
+                          <a href="#">GNI</a>
+                      </li>
+                      <li>
+                          <a href="#">Total Debt(%)</a>
+                      </li>
+                  </ul>
+              </li>
+              </ul>
+              <ul class="list-unstyled CTAs">
+                <li>
+                    <a href=""class="article" >Import Export</a>
+                </li>
+                <li>
+                    <a href="" class="article">Predict</a>
+                </li>
+            </ul>
             </nav>
             
             <article>
