@@ -42,6 +42,29 @@
   <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
   <script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
   <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script src="./home.js"></script>
+  <script>
+     $(document).ready(function () {
+      $('#sidebarCollapse').on('click', function () {
+        $('#sidebar').toggleClass('active');
+      });
+    });
+
+    $(document).ready(function () {
+      $('.nav ul li:first').addClass('active');
+      $('.tab-content:not(:first)').hide();
+      $('.nav ul li a').click(function (event) {
+        event.preventDefault();
+        var content = $(this).attr('href');
+        $(this).parent().addClass('active');
+        $(this).parent().siblings().removeClass('active');
+        $(content).show();
+        $(content).siblings('.tab-content').hide();
+      });
+    });
+
+  </script>
 </head>
 
 <body>
@@ -106,51 +129,94 @@
               <a href="#importExport" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Import Export</a>
             </li>
           </ul>
+           <ul class="list-unstyled CTAs">
+            <li><a href="#section-predict" class="article">Predict</a></li>
+          </ul>
         </div>
       </nav>
 
       <div id="section-macroecon" class="tab-content">
         <h2>Macroeconomic</h2>
         <p>GRAPHS</p>
-        <div  class = "chhhhh"id="chartdiv0"></div>
-        <div class= "chhhhh" id="chartdiv1"></div>
-        <div  class= "chhhhh" id="chartdiv2"></div>
+        <div class="wrap-graphs">
+          <div  class = "chhhhh"id="chartdiv0"></div>
+          <div class= "chhhhh" id="chartdiv1"></div>
+          <div  class= "chhhhh" id="chartdiv2"></div>
+        </div>
       </div>
       <div id="section-agriculture" class="tab-content">
         <h2>Agricultural</h2>
         <p>GRAPHS </p>
+        <div class="wrap-graphs">
+          <div  class = "chhhhh"id="chartdiv3"></div>
+          <div class= "chhhhh" id="chartdiv4"></div>
+          <div  class= "chhhhh" id="chartdiv5"></div>
+        </div>
       </div>
       <div id="section-debt" class="tab-content">
         <h2>Debt Services</h2>
         <p>GRAPHS </p>
+        <div class="wrap-graphs">
+          <div  class = "chhhhh"id="chartdiv6"></div>
+          <div class= "chhhhh" id="chartdiv7"></div>
+          <div  class= "chhhhh" id="chartdiv8"></div>
+        </div>
       </div>
       <div id="importExport" class="tab-content">
-        <h2>Import Export</h2>
+        <div id="sankey_basic" class="san"></div>
+        <div id="piechart" style="width: 900px; height: 500px;"></div>
       </div>
-      
+      <div id="section-predict" class="tab-content">
+        <h2>Model Prediction</h2>
+          <div class="wrap-left-rght">
+        <div class="left">
+          <p>Projected GDP:</p>
+          <input type="range" min="1" max="100" value="50">
+  
+          <p>Current Account Balance (% of GDP):</p>
+          <input type="range" min="1" max="100" value="50">
+
+          <p>Foreign direct investment, netinflows (% of GDP) :</p>
+          <input type="range" min="1" max="100" value="50">
+
+          <p>Fertilizer consumption (% of fertilizer production) :</p>
+          <input type="range" min="1" max="100" value="50">
+
+          <p>Total reserves (% of total external debt) :</p>
+          <input type="range" min="1" max="100" value="50">
+
+        </div>
+
+        <div class="right">
+          <p>FDI NetOutflows(% of GDP) :</p>
+          <input type="range" min="1" max="100" value="50">
+
+          <p>Agriculural Contribution (% GDP) :</p>
+          <input type="range" min="1" max="100" value="50">
+
+          <p>Manufacturing (%GDP) :</p>
+          <input type="range" min="1" max="100" value="50">
+
+          <p>Agriculture forestry, and fishing, value added (annual % growth) :</p>
+          <input type="range" min="1" max="100" value="50">
+
+          <p>Total debt service (% of GNI) :</p>
+          <input type="range" min="1" max="100" value="50">
+        </div>
+        </div>
+
+
+        <button type="button" class="machine-btn" onclick=myFuntion()>Call Machine Learning <br>Model</button>
+        <script>
+           function myFuntion(){
+           alert("A Machine Learning Model is Called!");
+           }
+       </script>
     </section>
   </div>
   <!-- Chart code -->
   <script>
-     $(document).ready(function () {
-      $('#sidebarCollapse').on('click', function () {
-        $('#sidebar').toggleClass('active');
-      });
-    });
-
-    $(document).ready(function () {
-      $('.nav ul li:first').addClass('active');
-      $('.tab-content:not(:first)').hide();
-      $('.nav ul li a').click(function (event) {
-        event.preventDefault();
-        var content = $(this).attr('href');
-        $(this).parent().addClass('active');
-        $(this).parent().siblings().removeClass('active');
-        $(content).show();
-        $(content).siblings('.tab-content').hide();
-      });
-    });
-
+    
 
     
     am5.ready(function () {
@@ -158,6 +224,7 @@
       // Create root element
       // https://www.amcharts.com/docs/v5/getting-started/#Root_element
 
+   
       $(".chhhhh").each(function( index){
         var root = am5.Root.new("chartdiv" + index);
         root.setThemes([
